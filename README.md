@@ -95,23 +95,24 @@ This flowchart captures the sequence of steps the program follows from when the 
 - It provides an interactive UI that allows users to input data and see real-time results through graph visualization.
 - The use of Dijkstra’s algorithm ensures efficient calculation of neighborhoods to be notified.
 <hr/>
-# Discussion and Conclusions
 
-## Project Issues
+## 7. Discussion and Conclusions
+
+### Project Issues
 
 1. **Graph Representation**: Representing neighborhoods and their connections as a graph posed challenges, especially in defining accurate edge weights for distances.
 2. **Radius Calculation**: Adjusting Dijkstra’s algorithm to notify only within a specific radius required fine-tuning to ensure accurate notifications.
 3. **Scalability**: As the network grows, performance may degrade due to the computational demands of both the algorithm and visualization.
 4. **User Interface**: Integrating the complex algorithms with an intuitive Tkinter interface required careful validation and event handling.
 
-## Limitations
+### Limitations
 
 1. **Geographic Data Accuracy**: The model assumes uniform edge weights, which may not reflect real-world geography accurately.
 2. **Real-Time Processing**: The system does not update dynamically with new crime data, limiting its real-world applicability.
 3. **Graph Size**: Larger networks may suffer from performance issues due to time complexity, especially with more nodes and edges.
 4. **Dynamic Graph Changes**: The system assumes a static graph, and handling dynamic changes like new neighborhoods or roads would add complexity.
 
-## Application of Course Learning
+### Application of Course Learning
 
 1. **Graph Theory**: The project uses graph representations and algorithms, especially Dijkstra’s algorithm, to model crime alert propagation.
 2. **Algorithm Design**: Implementing and optimizing Dijkstra’s algorithm showed how to apply algorithm design to real-world problems.
@@ -119,7 +120,7 @@ This flowchart captures the sequence of steps the program follows from when the 
 4. **Visualization Techniques**: Using **NetworkX** and **Matplotlib** provided experience in visualizing complex data.
 5. **User Interface**: Developing an interactive **Tkinter UI** integrated backend algorithms with user-friendly design.
 
-## Conclusion
+### Conclusion
 
 The **Neighborhood Crime Alert Network** is a practical application of graph theory and algorithmic concepts to simulate crime alert propagation. While scalability and real-time processing are limitations, the project offers valuable insights into crime management and public safety. With further optimization and real-time data integration, it could be expanded into a more robust system for community safety.
 
