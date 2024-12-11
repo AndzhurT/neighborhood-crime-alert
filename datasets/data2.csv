@@ -1,0 +1,41 @@
+Source,Target,Weight
+School,Library,1.2
+School,Park,2.5
+Library,Supermarket,0.8
+Library,Hospital,1.7
+Park,Restaurant,2.0
+Restaurant,Mall,1.4
+Supermarket,Cinema,1.5
+Hospital,Police Station,3.2
+Cinema,Gym,0.9
+Cinema,Restaurant,2.1
+Gym,Mall,1.1
+Mall,School,3.0
+Gym,Zoo,2.6
+Zoo,Pharmacy,1.8
+Pharmacy,Police Station,1.5
+Pharmacy,Park,2.4
+Supermarket,Garden,2.1
+Garden,Court,2.3
+Court,Fire Station,1.9
+Fire Station,Police Station,3.5
+Fire Station,Garden,1.8
+Garden,Museum,2.7
+Museum,Station,3.1
+Station,Park,2.2
+Museum,Zoo,1.5
+Zoo,Restaurant,2.8
+Cinema,Museum,3.6
+Library,Garden,1.4
+Park,Court,2.9
+Station,Supermarket,2.3
+Station,Cinema,3.4
+Gym,Park,2.1
+Mall,Hospital,1.3
+School,Garden,2.6
+Court,Museum,1.9
+Fire Station,Hospital,2.5
+Hospital,Park,2.0
+Station,Zoo,3.0
+Court,Supermarket,2.2
+Mall,Cinema,1.8

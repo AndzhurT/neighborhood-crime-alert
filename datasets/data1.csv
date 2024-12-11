@@ -1,0 +1,12 @@
+Source,Target,Weight
+A,B,3
+A,C,1
+B,D,4
+C,D,2
+C,E,5
+D,F,3
+E,F,2
+E,G,4
+F,H,1
+G,H,3
+H,Police Station,2
