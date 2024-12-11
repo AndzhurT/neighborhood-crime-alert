@@ -1,5 +1,4 @@
-import tkinter as tk
-from tkinter import ttk
+import customtkinter as ctk
 import networkx as nx
 import matplotlib.pyplot as plt
 import heapq
@@ -9,15 +8,21 @@ def create_graph():
     G = nx.Graph()
     # Adding nodes (neighborhoods) and edges (distances in miles)
     G.add_weighted_edges_from([
-        ('A', 'B', 4), ('A', 'C', 3), ('B', 'D', 5),
-        ('C', 'D', 1), ('C', 'E', 6), ('D', 'E', 2),
-        ('E', 'F', 7), ('D', 'F', 3)
+        ('Times Square', 'Central Park', 2.5),
+        ('Times Square', 'Empire State Building', 1.0),
+        ('Central Park', 'Columbus Circle', 0.8),
+        ('Empire State Building', 'Flatiron District', 1.2),
+        ('Flatiron District', 'Union Square', 0.7),
+        ('Union Square', 'Greenwich Village', 1.0),
+        ('Columbus Circle', 'Upper West Side', 2.0),
+        ('Upper West Side', 'Central Park', 1.5),
+        ('Police Station', 'Times Square', 2.8),
+        ('Police Station', 'Flatiron District', 3.0)
     ])
     return G
 
-# Dijkstra's algorithm
+# Dijkstra's algorithm for neighborhoods
 def dijkstra_notify(graph, start_node, radius):
-    # Min-heap to store the nodes and their distances
     priority_queue = [(0, start_node)]
     visited = {}
     
@@ -37,108 +42,111 @@ def dijkstra_notify(graph, start_node, radius):
     
     return visited
 
+# Find the shortest path to the police station
+def find_shortest_path_to_police(graph, source_node):
+    shortest_path = nx.shortest_path(graph, source=source_node, target="Police Station", weight="weight")
+    return shortest_path
+
 # Visualize using NetworkX 
-def visualize_graph(graph, notified_nodes, source, radius):
-    # Use spring layout with added parameters for better spacing
-    pos = nx.spring_layout(graph, k=0.5, seed=42)  # The 'k' parameter controls node distance
+def visualize_graph(graph, notified_nodes, source, radius, police_path):
+    pos = nx.spring_layout(graph, k=0.5, seed=42)
     
     # Define color schemes
     node_color_map = []
     for node in graph.nodes():
         if node == source:
             node_color_map.append('#FF6347')  # Red for the source (crime location)
+        elif node == "Police Station":
+            node_color_map.append('#32CD32')  # Green for the police station
         elif node in notified_nodes:
             node_color_map.append('#FFD700')  # Golden for notified nodes
         else:
             node_color_map.append('#1E90FF')  # Blue for other nodes
 
-    # Edge colors: Highlight edges that connect notified nodes
+    # Edge colors
     edge_color_map = []
     for u, v in graph.edges():
-        if (u in notified_nodes and v in notified_nodes):
-            edge_color_map.append('#FF4500')  # Orange-red for highlighted edges
+        if (u in police_path and v in police_path):
+            edge_color_map.append('#FF4500')  # Orange-red for shortest path to police
+        elif (u in notified_nodes and v in notified_nodes):
+            edge_color_map.append('#FFD700')  # Yellow for notified areas
         else:
             edge_color_map.append('#A9A9A9')  # Grey for normal edges
 
-    # Set node size based on degree or other metrics (can be adjusted)
     node_sizes = [2500 for node in graph.nodes()]
     
-    # Adjust font size and color for better readability
-    font_size = 12
-    font_color = 'black'
-    font_weight = 'bold'
-    
-    # Set up the plot with a more attractive background
     plt.figure(figsize=(10, 8), facecolor='#f0f0f0')
-
-    # Draw the graph with the improved color palette and styling
     nx.draw(
         graph, pos, with_labels=True,
         node_size=node_sizes,
         node_color=node_color_map,
         edge_color=edge_color_map,
-        font_size=font_size, font_color=font_color, font_weight=font_weight,
+        font_size=12, font_color='black', font_weight='bold',
         width=2, alpha=0.8, font_family='sans-serif',
-        edgecolors='black', linewidths=1.5  # Node border color and thickness
+        edgecolors='black', linewidths=1.5
     )
     
-    # Title for better context and positioning
     plt.title(f"Crime Notification System: Source = {source}, Radius = {radius} miles", fontsize=14, fontweight='bold', color='#333333', pad=20)
-    
-    # Remove grid and axes for a cleaner look
-    plt.grid(False)  # Hide gridlines
-    plt.axis('off')  # Hide axis ticks and labels
-    
-    # Show the plot
+    plt.grid(False)
+    plt.axis('off')
     plt.show()
 
-# Tkinter UI
+# customtkinter UI
 class CrimeGraphApp:
     def __init__(self, root):
+        ctk.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
+        ctk.set_default_color_theme("blue")  # Themes: "blue" (default), "green", "dark-blue"
+
         self.root = root
         self.root.title("Crime Neighborhood Alert System")
-        
-        # Create the graph and get the list of nodes
+        self.root.geometry("600x400")
+
         self.graph = create_graph()
         self.nodes = list(self.graph.nodes())
-        
-        # Add dropdown for source node
-        self.source_label = tk.Label(self.root, text="Select Source Node (Crime Location):")
-        self.source_label.pack(pady=10)
-        
-        self.source_var = tk.StringVar(value=self.nodes[0])  # Default value to the first node in the graph
-        self.source_dropdown = ttk.Combobox(self.root, textvariable=self.source_var, values=self.nodes)
-        self.source_dropdown.pack(pady=10)
-        
-        # Add input for radius
-        self.radius_label = tk.Label(self.root, text="Enter Notification Radius (in miles):")
-        self.radius_label.pack(pady=10)
-        
-        self.radius_entry = tk.Entry(self.root)
-        self.radius_entry.insert(0, "4.0")  # Default value
-        self.radius_entry.pack(pady=10)
-        
-        # Add button to visualize
-        self.visualize_button = tk.Button(self.root, text="Visualize", command=self.visualize_graph)
+
+        # Main frame
+        self.main_frame = ctk.CTkFrame(self.root, corner_radius=10)
+        self.main_frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        # Title label
+        self.title_label = ctk.CTkLabel(self.main_frame, text="Crime Neighborhood Alert System", font=ctk.CTkFont(size=18, weight="bold"))
+        self.title_label.pack(pady=10)
+
+        # Dropdown for source node
+        self.source_label = ctk.CTkLabel(self.main_frame, text="Select Source Node (Crime Location):", font=ctk.CTkFont(size=12))
+        self.source_label.pack(pady=5)
+
+        self.source_var = ctk.StringVar(value=self.nodes[0])
+        self.source_dropdown = ctk.CTkOptionMenu(self.main_frame, variable=self.source_var, values=self.nodes)
+        self.source_dropdown.pack(pady=5)
+
+        # Input for radius
+        self.radius_label = ctk.CTkLabel(self.main_frame, text="Enter Notification Radius (in miles):", font=ctk.CTkFont(size=12))
+        self.radius_label.pack(pady=5)
+
+        self.radius_entry = ctk.CTkEntry(self.main_frame, width=200)
+        self.radius_entry.insert(0, "1.0")
+        self.radius_entry.pack(pady=5)
+
+        # Visualize button
+        self.visualize_button = ctk.CTkButton(self.main_frame, text="Visualize Graph", command=self.visualize_graph)
         self.visualize_button.pack(pady=20)
-    
+
     def visualize_graph(self):
-        # Get source node and radius from the UI
         source_node = self.source_var.get()
         try:
             radius = float(self.radius_entry.get())
         except ValueError:
-            print("Invalid radius input. Using default value of 4.0")
-            radius = 4.0
+            print("Invalid radius input. Using default value of 1.0")
+            radius = 1.0
         
-        # Find notified nodes
         notified_nodes = dijkstra_notify(self.graph, source_node, radius).keys()
+        police_path = find_shortest_path_to_police(self.graph, source_node)
         
-        # Visualize the graph
-        visualize_graph(self.graph, notified_nodes, source_node, radius)
+        visualize_graph(self.graph, notified_nodes, source_node, radius, police_path)
 
-# Run the Tkinter Application
+# Run the customtkinter Application
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = CrimeGraphApp(root)
     root.mainloop()
