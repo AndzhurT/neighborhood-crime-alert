@@ -73,6 +73,9 @@ def visualize_graph(graph, notified_nodes, source, radius, police_path):
         else:
             edge_color_map.append('#A9A9A9')  # Grey for normal edges
 
+    # Edge labels for weights
+    edge_labels = nx.get_edge_attributes(graph, 'weight')
+
     node_sizes = [2500 for node in graph.nodes()]
     
     plt.figure(figsize=(10, 8), facecolor='#f0f0f0')
@@ -86,10 +89,14 @@ def visualize_graph(graph, notified_nodes, source, radius, police_path):
         edgecolors='black', linewidths=1.5
     )
     
+    # Draw edge labels
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_size=10, font_color='black')
+
     plt.title(f"Crime Notification System: Source = {source}, Radius = {radius} miles", fontsize=14, fontweight='bold', color='#333333', pad=20)
     plt.grid(False)
     plt.axis('off')
     plt.show()
+
 
 # customtkinter UI
 class CrimeGraphApp:
@@ -125,7 +132,7 @@ class CrimeGraphApp:
         self.radius_label.pack(pady=5)
 
         self.radius_entry = ctk.CTkEntry(self.main_frame, width=200)
-        self.radius_entry.insert(0, "1.0")
+        self.radius_entry.insert(0, "2.0")
         self.radius_entry.pack(pady=5)
 
         # Visualize button
@@ -137,8 +144,8 @@ class CrimeGraphApp:
         try:
             radius = float(self.radius_entry.get())
         except ValueError:
-            print("Invalid radius input. Using default value of 1.0")
-            radius = 1.0
+            print("Invalid radius input. Using default value of 2.0")
+            radius = 2.0
         
         notified_nodes = dijkstra_notify(self.graph, source_node, radius).keys()
         police_path = find_shortest_path_to_police(self.graph, source_node)
